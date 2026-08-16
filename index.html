@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Minecraft Switch コマンド練習帳</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Minecraft Bedrock / Nintendo Switch 向け</p>
+        <h1>コマンド練習帳</h1>
+        <p>
+          見て、組み立てて、英語で聴く。実際に試しやすいコマンドを集めた学習用ツールです。
+        </p>
+      </div>
+      <div class="quick-settings" aria-label="表示・音声・確認基準">
+        <label class="setting-control compact-control"
+          >テーマ
+          <select id="themeSelect" aria-label="テーマ">
+            <option value="light">ライト</option>
+            <option value="dark">ダーク</option>
+          </select>
+        </label>
+        <label class="setting-control voice-control"
+          >英語音声
+          <select id="voiceSelect" aria-label="英語音声"></select>
+        </label>
+        <label class="setting-control rate-control"
+          >速度
+          <div class="rate-row">
+            <input
+              id="rate"
+              type="range"
+              min="0.30"
+              max="1.20"
+              step="0.05"
+              value="0.60"
+              aria-label="読み上げ速度"
+            />
+            <strong id="rateValue">0.60</strong>
+          </div>
+        </label>
+        <div class="version">
+          確認基準<br /><strong>Bedrock 26.44</strong><br /><small
+            >リリース: 2026-08-14</small
+          >
+        </div>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="メインメニュー">
+      <button class="tab active" data-tab="presets">実用プリセット</button>
+      <button class="tab" data-tab="builder">コマンド作成</button>
+      <button class="tab" data-tab="enchants">エンチャント辞典</button>
+      <button class="tab" data-tab="basics">基礎メモ</button>
+    </nav>
+
+    <main>
+      <section id="presets" class="panel active">
+        <div class="section-head">
+          <div>
+            <h2>そのまま試しやすいプリセット</h2>
+            <p>
+              検索・カテゴリ・対象で絞り込み、名前・レベル・カテゴリで並べ替えできます。
+            </p>
+          </div>
+        </div>
+        <div class="filters">
+          <label
+            >検索<input
+              id="search"
+              type="search"
+              placeholder="例: 弓 / fill / mansion / power"
+          /></label>
+          <label
+            >カテゴリ<select id="categoryFilter">
+              <option value="">すべて</option>
+            </select></label
+          >
+          <label
+            >対象<select id="targetFilter">
+              <option value="">すべて</option>
+            </select></label
+          >
+          <label
+            >並べ替え<select id="sortPreset">
+              <option value="recommended">おすすめ順</option>
+              <option value="name">名前</option>
+              <option value="category">カテゴリ</option>
+              <option value="level">レベル</option>
+            </select></label
+          >
+        </div>
+        <div id="presetCount" class="count"></div>
+        <div id="presetList" class="cards"></div>
+      </section>
+
+      <section id="builder" class="panel">
+        <div class="section-head">
+          <div>
+            <h2>コマンドを組み立てる</h2>
+            <p>
+              代表的なIDは候補から選べます。選択用と直接入力用を分け、モバイルでも用途が分かる表示にしています。
+            </p>
+          </div>
+        </div>
+        <div class="builder-grid">
+          <div class="builder-form card-box">
+            <label
+              >コマンド種類<select id="builderType">
+                <option value="tp">テレポート /tp</option>
+                <option value="give">アイテム付与 /give</option>
+                <option value="enchant">エンチャント /enchant</option>
+                <option value="fill">範囲編集 /fill</option>
+                <option value="locate">構造物検索 /locate</option>
+                <option value="effect">効果 /effect</option>
+                <option value="gamemode">ゲームモード /gamemode</option>
+                <option value="time">時刻 /time</option>
+                <option value="custom">自由入力</option>
+              </select></label
+            >
+            <div id="builderFields"></div>
+          </div>
+          <div class="result card-box">
+            <h3>生成結果</h3>
+            <pre id="builtCommand" class="command big"></pre>
+            <p class="speak-preview">
+              <strong>コマンド読み上げ:</strong>
+              <span id="spokenPreview"></span>
+            </p>
+            <div class="actions">
+              <button id="copyBuilt">コピー</button
+              ><button id="speakBuilt" class="primary">🔊 英語で読む</button>
+            </div>
+            <p class="note">
+              音声と速度は画面上部で変更できます。ブラウザ標準の SpeechSynthesis
+              を使うため、利用できる声や発音は端末・ブラウザで異なります。女性音声と推定できる英語音声がある場合は優先して初期選択します。
+            </p>
+          </div>
+        </div>
+        <p class="builder-doc-note">
+          この作成画面は、学習・日常利用で使いやすい代表コマンドを収録しています。ここにないコマンドや詳細な引数は、<a
+            href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/commandsreference/examples/commandlist?view=minecraft-bedrock-stable"
+            target="_blank"
+            rel="noopener"
+            >公式 Bedrock Commands Documentation</a
+          >
+          を確認してください。
+        </p>
+      </section>
+
+      <section id="enchants" class="panel">
+        <div class="section-head">
+          <div>
+            <h2>エンチャント辞典</h2>
+            <p>
+              コマンドID、主な対象、最大レベルを一覧化しています。音声ボタンはコマンドではなく英語名だけを自然につなげて読みます。
+            </p>
+          </div>
+        </div>
+        <div class="filters">
+          <label
+            >検索<input
+              id="enchantSearch"
+              type="search"
+              placeholder="例: 虫 / thorns / bow / 防具"
+          /></label>
+          <label
+            >付与対象<select id="enchantTarget">
+              <option value="">すべて / All</option>
+            </select></label
+          >
+          <label
+            >レベル<select id="enchantLevel">
+              <option value="">すべて</option>
+              <option value="1">最大1</option>
+              <option value="2">最大2</option>
+              <option value="3">最大3</option>
+              <option value="4">最大4</option>
+              <option value="5">最大5</option>
+            </select></label
+          >
+          <label
+            >並べ替え<select id="enchantSort">
+              <option value="id">ID</option>
+              <option value="jp">日本語名</option>
+              <option value="level">最大レベル</option>
+              <option value="target">対象</option>
+            </select></label
+          >
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日本語</th>
+                <th>コマンドID</th>
+                <th>対象（English / 日本語）</th>
+                <th>最大</th>
+                <th>英語音声</th>
+                <th>例</th>
+              </tr>
+            </thead>
+            <tbody id="enchantTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="basics" class="panel">
+        <div class="basics-grid">
+          <article class="card-box">
+            <h2>ターゲットセレクター</h2>
+            <dl>
+              <dt>@s</dt>
+              <dd>自分自身 / executor</dd>
+              <dt>@p</dt>
+              <dd>最も近いプレイヤー</dd>
+              <dt>@a</dt>
+              <dd>全プレイヤー</dd>
+              <dt>@r</dt>
+              <dd>ランダムなプレイヤー</dd>
+              <dt>@e</dt>
+              <dd>すべてのエンティティ</dd>
+            </dl>
+          </article>
+          <article class="card-box">
+            <h2>座標</h2>
+            <dl>
+              <dt>0 100 0</dt>
+              <dd>絶対座標</dd>
+              <dt>~ ~ ~</dt>
+              <dd>現在位置</dd>
+              <dt>~5 ~ ~-3</dt>
+              <dd>現在位置から X+5、Z-3</dd>
+            </dl>
+          </article>
+          <article class="card-box warning">
+            <h2>/fill は要注意</h2>
+            <p>
+              広い範囲を一瞬で変更します。<strong
+                >実行後に元へ戻す専用の「取り消し」コマンドはありません。</strong
+              >
+              大切なワールドではコピーを作り、狭い範囲から試してください。
+            </p>
+          </article>
+          <article class="card-box">
+            <h2>/fill のモード</h2>
+            <dl class="wide-dl">
+              <dt>destroy</dt>
+              <dd>置換し、元ブロックを破壊扱いにする</dd>
+              <dt>hollow</dt>
+              <dd>外側を指定ブロックで囲い、内側を空気にする</dd>
+              <dt>keep</dt>
+              <dd>空気の場所だけを埋める</dd>
+              <dt>outline</dt>
+              <dd>外周だけを指定ブロックにする</dd>
+              <dt>replace</dt>
+              <dd>全体、または指定した置換元だけを置換する</dd>
+            </dl>
+          </article>
+          <article class="card-box">
+            <h2>/enchant の注意</h2>
+            <p>
+              対象プレイヤーが<strong>メインハンドに持っている対応アイテム</strong>へ付与します。先に弓を与えても、弓を手に持ってから
+              enchant を実行してください。
+            </p>
+          </article>
+          <article class="card-box">
+            <h2>ゲーム内の確認</h2>
+            <p>
+              <code>/help</code> でコマンド一覧、<code>/help fill</code>
+              のようにコマンド名を続けると、そのコマンドの構文をゲーム内でも確認できます。
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <datalist id="blockDatalist"></datalist>
+    <datalist id="itemDatalist"></datalist>
+    <datalist id="structureDatalist"></datalist>
+    <datalist id="enchantDatalist"></datalist>
+    <datalist id="effectDatalist"></datalist>
+
+    <footer>
+      <p>
+        非公式の学習用ツールです。Minecraft は Mojang/Microsoft
+        の商標です。コマンドはチート有効・必要権限のあるワールドで使用してください。
+      </p>
+      <p class="official-links">
+        公式資料：
+        <a
+          href="https://learn.microsoft.com/en-us/minecraft/creator/documents/commandsintroduction?view=minecraft-bedrock-stable"
+          target="_blank"
+          rel="noopener"
+          >Introduction to Commands</a
+        >
+        ／
+        <a
+          href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/commandsreference/examples/commandlist?view=minecraft-bedrock-stable"
+          target="_blank"
+          rel="noopener"
+          >Bedrock Commands Documentation</a
+        >
+        ／
+        <a
+          href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/commandsreference/examples/commands/fill?view=minecraft-bedrock-stable"
+          target="_blank"
+          rel="noopener"
+          >/fill 公式リファレンス</a
+        >
+      </p>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>
