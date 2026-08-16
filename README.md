@@ -1,4 +1,4 @@
-# Minecraft Switch コマンド練習帳 v005
+# Minecraft Switch コマンド練習帳
 
 Nintendo Switch の Minecraft（Bedrock Edition）で使うコマンドを、一覧・検索・組み立て・英語音声読み上げで練習するための Web アプリです。
 
