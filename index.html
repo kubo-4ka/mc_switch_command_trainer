@@ -2,8 +2,47 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" id="themeColor" content="#213d2a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="コマンド練習帳" />
+    <meta name="application-name" content="コマンド練習帳" />
+    <meta
+      name="description"
+      content="Minecraft Bedrock / Nintendo Switch向け。コマンドを見て、組み立てて、英語で聴く学習用Webアプリ。"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/icon-180.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="icons/icon-192.png"
+    />
     <title>Minecraft Switch コマンド練習帳</title>
+    <script>
+      (() => {
+        let theme = "light";
+        try {
+          theme =
+            localStorage.getItem("minecraft-command-trainer-theme") || "light";
+        } catch (_) {}
+        theme = theme === "dark" ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+        const color = theme === "dark" ? "#122118" : "#213d2a";
+        document.documentElement.style.backgroundColor = color;
+        const meta = document.getElementById("themeColor");
+        if (meta) meta.setAttribute("content", color);
+      })();
+    </script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -312,6 +351,12 @@
           >/fill 公式リファレンス</a
         >
       </p>
+      <div class="pwa-actions" aria-live="polite">
+        <button id="installApp" class="install-button" type="button" hidden>
+          アプリとしてインストール
+        </button>
+        <span id="installStatus"></span>
+      </div>
     </footer>
     <script src="app.js"></script>
   </body>

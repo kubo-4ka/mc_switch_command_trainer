@@ -64,6 +64,8 @@ body {
   background: var(--bg);
   color: var(--ink);
   transition: background 0.18s, color 0.18s;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 button,
 input,
@@ -79,7 +81,7 @@ a {
   justify-content: space-between;
   gap: 24px;
   align-items: center;
-  padding: 26px clamp(18px, 4vw, 58px);
+  padding: calc(26px + env(safe-area-inset-top)) clamp(18px, 4vw, 58px) 26px;
   background: linear-gradient(135deg, var(--hero-a), var(--hero-b));
   color: white;
 }
@@ -476,7 +478,7 @@ td code {
   color: var(--danger);
 }
 footer {
-  padding: 22px;
+  padding: 22px 22px calc(22px + env(safe-area-inset-bottom));
   text-align: center;
   color: var(--muted);
   font-size: 12px;
@@ -538,7 +540,7 @@ footer p {
     grid-template-columns: 1fr;
   }
   .hero {
-    padding: 22px 18px;
+    padding: calc(22px + env(safe-area-inset-top)) 18px 22px;
   }
   .tabs {
     padding-left: 8px;
@@ -560,4 +562,30 @@ footer p {
   .rate-control {
     width: 100%;
   }
+}
+
+.pwa-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  min-height: 34px;
+}
+.install-button {
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: white;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.pwa-actions span {
+  line-height: 1.5;
+}
+.offline-note {
+  font-size: 12px;
+  color: var(--muted);
 }

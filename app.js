@@ -458,6 +458,10 @@ const RATE_KEY = "minecraft-command-trainer-rate";
 function applyTheme(theme) {
   const safe = theme === "dark" ? "dark" : "light";
   document.documentElement.dataset.theme = safe;
+  const color = safe === "dark" ? "#122118" : "#213d2a";
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", color);
+  document.documentElement.style.backgroundColor = color;
   if ($("#themeSelect")) $("#themeSelect").value = safe;
 }
 function initTheme() {
@@ -1109,6 +1113,58 @@ function renderEnchants() {
   (s) => $(s).addEventListener("input", renderEnchants)
 );
 
+let deferredInstallPrompt = null;
+function initPwa() {
+  const installButton = $("#installApp"),
+    status = $("#installStatus");
+  const standalone =
+    window.matchMedia?.("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+  const isiOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (standalone) {
+    if (status)
+      status.textContent =
+        "ホーム画面から起動中です。アプリ本体はオフラインでも利用できます。";
+  } else if (isiOS) {
+    if (status)
+      status.textContent =
+        "iPhone / iPad: Safari の共有メニュー →「ホーム画面に追加」でインストールできます。";
+  } else if (status) {
+    status.textContent =
+      "GitHub Pages など HTTPS で公開すると、対応ブラウザからインストールできます。";
+  }
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (installButton) installButton.hidden = false;
+    if (status)
+      status.textContent = "この端末ではアプリとしてインストールできます。";
+  });
+  if (installButton)
+    installButton.addEventListener("click", async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      try {
+        await deferredInstallPrompt.userChoice;
+      } catch (_) {}
+      deferredInstallPrompt = null;
+      installButton.hidden = true;
+    });
+  window.addEventListener("appinstalled", () => {
+    if (installButton) installButton.hidden = true;
+    if (status)
+      status.textContent =
+        "インストールしました。次回からホーム画面から起動できます。";
+  });
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    window.addEventListener("load", () =>
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {})
+    );
+  }
+}
+
 initTheme();
 initVoiceSettings();
 initDatalists();
@@ -1116,3 +1172,4 @@ populateFilters();
 renderPresets();
 buildFields();
 renderEnchants();
+initPwa();
